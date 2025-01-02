@@ -151,7 +151,263 @@ CREATE TABLE production.stocks (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- * means all the columns
+-- "sales" is the schema in the BikeStores database
+-- "customer" is the table in the sales schema
+
 select * from sales.customers;
+
+-- A. Specifying columns according to our requirement
+
+select customer_id, email, city, zip_code from sales.customers;
+
+-- B. Filtering Rows on specific condition
+
+select first_name, last_name, street, city from sales.customers
+where city = 'Houston';
+
+-- C. Sorting Data using "Order By" on customer_id
+--	"Order By", by default sort in ascending order.
+
+select customer_id, first_name, last_name, city from sales.customers
+where city = 'Houston'
+order by customer_id;
+
+-- D. Sorting Data using "Order By" on customer_id
+--	"Order By", by default sort in ascending order.
+-- In order to sort in descending we specify "Desc"
+
+select customer_id, first_name, last_name, city from sales.customers
+where city = 'Houston'
+order by customer_id desc 
+
+
+-- E. Getting number of rows a/c to our requirement.
+--	using "TOP" command.
+
+select top 7 customer_id, first_name, last_name, city from sales.customers
+where city = 'Houston'
+order by customer_id desc 
+
+-- F. ORDER OF EXECUTION
+
+-- 1. FROM
+-- 2. JOIN
+-- 3. WHERE
+-- 4. GROUP BY
+-- 5. HAVING
+-- 6. SELECT
+-- 7. DISTINCT
+-- 8. ORDER BY
+-- 9. LIMIT
+
+-- G. Group By
+
+select city, count(*)
+from sales.customers
+where state = 'CA'
+group by city
+order by city;
+
+-- H. Having Clause
+--	1. Filtering groups we use "Having" Clause.
+--	2. NOTE; "where"clause filter rows while "Having" clause filter groups.
+
+select city, count(*)
+from sales.customers
+where state = 'CA'
+group by city
+having count(*) > 10
+order by city;
+
+
+-- I. Order By with LEN(.....) Function
+
+SELECT
+    first_name,
+    last_name
+FROM
+    sales.customers
+ORDER BY
+    LEN(first_name) DESC;
+
+-- J. TOP and TIES command 
+
+SELECT TOP 3 WITH TIES
+    product_name, 
+    list_price
+FROM
+    production.products
+ORDER BY 
+    list_price DESC;
+
+-- k. SELECT DISTINCT 
+--	1. It removes duplicate values from the column in the result set.
+--  2. When you apply the DISTINCT clause to a column that contains NULLs, 
+--     it will keep only one NULL and eliminate the others. In other words, the DISTINCT clause treats all NULLs as the same value.
+-- ********* NOTE *********
+--	1.1. Both DISTINCT and GROUP BY clause reduces the number of returned rows in the result set by removing the duplicates.
+--	1.2. However, you should use the GROUP BY clause when you want to apply an aggregate function to one or more columns.
+
+select distinct city, state
+from sales.customers
+
+-- L.1 WHERE CLAUSE
+SELECT
+    product_id,
+    product_name,
+    model_year,
+    list_price
+FROM
+    production.products
+WHERE
+	model_year > 2018
+ORDER BY
+    list_price DESC;
+
+-- L.2 WHERE CLAUSE & AND operator
+SELECT
+    product_id,
+    product_name,
+    model_year,
+    list_price
+FROM
+    production.products
+WHERE
+	model_year > 2017 and product_id = 320
+ORDER BY
+    list_price DESC;
+
+-- L.3 WHERE CLAUSE & OR operator
+-- The OR operator with a WHERE clause returns result on basis of true result from any one condition.
+
+SELECT
+    product_id,
+    product_name,
+    category_id,
+    model_year,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price > 6000 OR model_year = 2018
+ORDER BY
+    list_price DESC;
+
+-- L.3 WHERE CLAUSE with BETWEEN operator
+
+SELECT
+    product_id,
+    product_name,
+    model_year,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price BETWEEN 1899.00 AND 1999.99
+ORDER BY
+    list_price DESC;
+
+-- L.4 WHERE CLAUSE with IN operator
+--	1. IN operator return only those values specified in the IN Oeprator.
+SELECT
+    product_id,
+    product_name,
+    category_id,
+    model_year,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price IN (299.99, 369.99, 489.99)
+ORDER BY
+    list_price DESC;
+
+
+-- M.  ----- WILDCARD CHARACTERS ------
+----	1. %cruiser% will return all the words that contain "cruiser".
+
+SELECT
+	product_id,
+	product_name,
+	category_id,
+	model_year,
+	list_price
+from
+	production.products
+
+where product_name like '%cruiser%'
+
+order by list_price;
+
+
+----	2. Starts with letter "z". 
+
+SELECT
+    customer_id,
+    first_name,
+    last_name
+FROM
+    sales.customers
+WHERE
+    last_name LIKE 'z%'
+ORDER BY
+    first_name;
+
+----	3. Ending with letter "er". 
+
+SELECT
+    customer_id,
+    first_name,
+    last_name
+FROM
+    sales.customers
+WHERE
+    last_name LIKE '%er'
+ORDER BY
+    first_name;
+
+
+----	4. Starts with letter "t" and ends with "s". 
+
+SELECT
+    customer_id,
+    first_name,
+    last_name
+FROM
+    sales.customers
+WHERE
+    last_name LIKE 't%s'
+ORDER BY
+    first_name;
+
+
+----	5. Starts with any letter but second letter should be after " _ " .
+
+SELECT
+    customer_id,
+    first_name,
+    last_name
+FROM
+    sales.customers
+WHERE
+    last_name LIKE '_u%'
+ORDER BY
+    first_name; 
+
+----	6. First character in the last name is either "Y" or "z".
+
+SELECT
+    customer_id,
+    first_name,
+    last_name
+FROM
+    sales.customers
+WHERE
+    last_name LIKE '[YZ]%'
+ORDER BY
+    last_name;
+
 
 
 
